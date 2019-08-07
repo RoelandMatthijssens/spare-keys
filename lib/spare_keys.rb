@@ -17,7 +17,7 @@ class SpareKeys
         keychain_path = expand_keychain_path(keychain_path)
 
         original_list = `security list-keychains #{domain_flag} | xargs`
-        original_keychain = `security #{type}-keychain #{domain_flag} | xargs` if type 
+        original_keychain = `security #{type}-keychain #{domain_flag} | xargs` if type
 
         `security #{type}-keychain #{domain_flag} -s #{keychain_path}` if type
 
@@ -29,7 +29,7 @@ class SpareKeys
                 yield if block_given?
             ensure
                 original_keychain = `security #{type}-keychain #{domain_flag} -s #{original_keychain}` if type
-                
+
                 unless clear_list
                     # Grab the keychain list as it looks right now in case
                     # another process has changed it
@@ -38,13 +38,13 @@ class SpareKeys
                     # Remove the supplied keychain
                     original_list = (current_list_as_array.reject { |item| item == keychain_path }).join(" ")
                 end
-                
+
                 `security list-keychains #{domain_flag} -s #{original_list}`
             end
         end
     end
 
-    # Creates a secure temporary keychain and adds it to the top of the 
+    # Creates a secure temporary keychain and adds it to the top of the
     # search list, reverting the list and deleting the keychain after the block is invoked.
     #
     # If no block is supplied, reverting the state becomes the responsibility of the caller.
@@ -79,17 +79,17 @@ class SpareKeys
 private
 
     def self.keychain_extension()
-        return is_sierra() ? '.keychain-db' : '.keychain' 
+        return is_sierra() ? '.keychain-db' : '.keychain'
     end
 
     def self.is_sierra()
- 
-        osVersion = `sysctl -n kern.osrelease`
-    
+
+      osVersion = "18.0.0"
+
         majorOsVersion = Integer(osVersion.split('.')[0])
-    
+
         return majorOsVersion >= 16 # Sierra
-    
+
     end
 
     def self.expand_keychain_path(path)
